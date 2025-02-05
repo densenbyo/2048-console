@@ -12,11 +12,8 @@ public class Table {
     private int[][] table;
     private static boolean isGameOver = false;
 
-    public Table(int row, int col) {
-        if (row != col) {
-            throw new IllegalArgumentException("row and col are not the same");
-        }
-        newGame(row, col);
+    public Table(int n) {
+        newGame(n, n);
     }
 
     public void printTable() {
@@ -106,7 +103,11 @@ public class Table {
             y = rand.nextInt(n);
         }
 
-        table[x][y] = 2;
+        if (rand.nextInt(11) == 10) {
+            table[x][y] = 4;
+        } else {
+            table[x][y] = 2;
+        }
     }
 
     private boolean emptyCellsExist() {

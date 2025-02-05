@@ -8,7 +8,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         Helper.printHelp();
-        Table table = new Table(4, 4);
+        Table table = new Table(4);
         do {
             table.printTable();
             table.printCurrentMax();
