@@ -2,9 +2,14 @@ package org.example;
 
 import java.util.Random;
 
+import static org.example.Mover.getMax;
+import static org.example.Mover.shiftDown;
+import static org.example.Mover.shiftLeft;
+import static org.example.Mover.shiftRight;
+import static org.example.Mover.shiftUp;
+
 public class Table {
     private int[][] table;
-    private static int max = 2;
     private static boolean isGameOver = false;
 
     public Table(int row, int col) {
@@ -39,25 +44,25 @@ public class Table {
         switch (direction) {
             case Direction.UP -> {
                 for (int i = 0; i < n; i++) {
-                    shiftUp(i);
+                    shiftUp(i, table);
                 }
                 System.out.println("Moved up");
             }
             case Direction.DOWN -> {
                 for (int i = 0; i < n; i++) {
-                    shiftDown(i);
+                    shiftDown(i, table);
                 }
                 System.out.println("Moved down");
             }
             case Direction.LEFT -> {
                 for (int i = 0; i < n; i++) {
-                    shiftLeft(i);
+                    shiftLeft(i, table);
                 }
                 System.out.println("Moved left");
             }
             case Direction.RIGHT -> {
                 for (int i = 0; i < n; i++) {
-                    shiftRight(i);
+                    shiftRight(i, table);
                 }
                 System.out.println("Moved right");
             }
@@ -66,112 +71,22 @@ public class Table {
         generateNumberInRandomPlace();
     }
 
-    private void shiftUp(int column) {
-        int n = table.length;
-        int[] temp = new int[n];
-        int idx = 0;
-
-        for (int row = 0; row < n; row++) {
-            if (table[row][column] != 0) {
-                temp[idx++] = table[row][column];
-            }
-        }
-
-        int[] temp2 = getNewGridAfterMergeNeighborNumbers(n, temp, idx);
-
-        for (int i = 0; i < n; i++) {
-            table[i][column] = temp2[i];
-        }
-    }
-
-    private void shiftDown(int column) {
-        int n = table.length;
-        int[] temp = new int[n];
-        int idx = 0;
-
-        for (int row = n - 1; row >= 0; row--) {
-            if (table[row][column] != 0) {
-                temp[idx++] = table[row][column];
-            }
-        }
-
-        int[] temp2 = getNewGridAfterMergeNeighborNumbers(n, temp, idx);
-
-        for (int i = n - 1; i >= 0; i--) {
-            table[i][column] = temp2[n - 1 - i];
-        }
-    }
-
-    private void shiftLeft(int row) {
-        int n = table.length;
-        int[] temp = new int[n];
-        int idx = 0;
-
-        for (int col = 0; col < n; col++) {
-            if (table[row][col] != 0) {
-                temp[idx++] = table[row][col];
-            }
-        }
-
-        int[] temp2 = getNewGridAfterMergeNeighborNumbers(n, temp, idx);
-
-        for (int col = 0; col < n; col++) {
-            table[row][col] = temp2[col];
-        }
-    }
-
-    private void shiftRight(int row) {
-        int n = table.length;
-        int[] temp = new int[n];
-        int idx = 0;
-
-        for (int col = n - 1; col >= 0; col--) {
-            if (table[row][col] != 0) {
-                temp[idx++] = table[row][col];
-            }
-        }
-
-        int[] temp2 = getNewGridAfterMergeNeighborNumbers(n, temp, idx);
-
-        for (int col = n - 1; col >= 0; col--) {
-            table[row][col] = temp2[n - 1 - col];
-        }
-    }
-
-    private int[] getNewGridAfterMergeNeighborNumbers(int n, int[] temp, int idx) {
-        for (int i = 0; i < idx - 1; i++) {
-            if (temp[i] == temp[i + 1]) {
-                temp[i] *= 2;
-                temp[i + 1] = 0;
-
-                if (temp[i] > max) {
-                    max = temp[i];
-                }
-            }
-        }
-
-        int[] temp2 = new int[n];
-        int idx2 = 0;
-        for (int i : temp) {
-            if (i != 0) {
-                temp2[idx2++] = i;
-            }
-        }
-
-        return temp2;
-    }
-
     public void newGame(int row, int col) {
         this.table = new int[row][col];
-       generateNumberInRandomPlace();
+        setIsGameOver(false);
+        generateNumberInRandomPlace();
     }
 
     public void printCurrentMax() {
-        System.out.println("Max: " + max);
+        System.out.println("Max: " + getMax());
     }
 
     public boolean isGameOver() {
         return isGameOver;
+    }
+
+    public void setIsGameOver(boolean isGameOver) {
+        Table.isGameOver = isGameOver;
     }
 
     private void generateNumberInRandomPlace() {
@@ -179,7 +94,7 @@ public class Table {
         int n = table.length;
 
         if (!emptyCellsExist()) {
-            isGameOver = true;
+            setIsGameOver(checkSameNeighbourExist());
             return;
         }
 
@@ -208,16 +123,16 @@ public class Table {
 
         return emptyCells > 0;
     }
-    enum Direction {
-        UP(1),
-        LEFT(3),
-        DOWN(2),
-        RIGHT(4);
 
-        public final int direction;
-
-        private Direction(int direction) {
-            this.direction = direction;
+    private boolean checkSameNeighbourExist() {
+        for (int i = 0; i < table.length - 1; i++) {
+            for (int j = 0; j < table.length - 1; j++) {
+                if (table[i][j] != table[i][j + 1] || table[i][j] == table[i + 1][j]) {
+                    return true;
+                }
+            }
         }
+
+        return false;
     }
 }

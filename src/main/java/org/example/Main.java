@@ -15,16 +15,16 @@ public class Main {
             input = scanner.nextLine();
 
             if (input.equalsIgnoreCase("up") || input.equalsIgnoreCase("u")) {
-                table.moveDirection(Table.Direction.UP);
+                table.moveDirection(Direction.UP);
                 Helper.clearScreen();
             } else if (input.equalsIgnoreCase("down") || input.equalsIgnoreCase("d")) {
-                table.moveDirection(Table.Direction.DOWN);
+                table.moveDirection(Direction.DOWN);
                 Helper.clearScreen();
             } else if (input.equalsIgnoreCase("left") || input.equalsIgnoreCase("l")) {
-                table.moveDirection(Table.Direction.LEFT);
+                table.moveDirection(Direction.LEFT);
                 Helper.clearScreen();
             } else if (input.equalsIgnoreCase("right") || input.equalsIgnoreCase("r")) {
-                table.moveDirection(Table.Direction.RIGHT);
+                table.moveDirection(Direction.RIGHT);
                 Helper.clearScreen();
             } else if (input.equalsIgnoreCase("h") || input.equalsIgnoreCase("help")) {
                 Helper.printHelp();
@@ -36,5 +36,7 @@ public class Main {
             }
         } while (!table.isGameOver());
         System.out.println("GG loshara");
+        scanner.close();
+        System.out.close();
     }
 }
